@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entscheidungs-Wizard: Effingen kaufen?</title>
+<style>
+  :root {
+    --primary: #0F4C81;
+    --primary-light: #2E75B6;
+    --primary-dark: #0A3559;
+    --accent: #E8B339;
+    --success: #2D7A3E;
+    --warning: #C97D27;
+    --danger: #B83A3A;
+    --bg: #F7F5F0;
+    --card-bg: #FFFFFF;
+    --text: #1F2937;
+    --text-muted: #6B7280;
+    --text-light: #9CA3AF;
+    --border: #E5E7EB;
+    --border-strong: #D1D5DB;
+    --info-bg: #F0F4F8;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 16px;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 2rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+  }
+  .header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .header p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Progress */
+  .progress-bar {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 1rem;
+    z-index: 10;
+    box-shadow: var(--shadow-sm);
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .card-number {
+    background: var(--primary);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+  }
+  .card-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  /* Info Button */
+  .info-btn {
+    background: none;
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    font-family: inherit;
+  }
+  .info-btn:hover {
+    background: var(--info-bg);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .info-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  /* Info Box */
+  .info-box {
+    background: var(--info-bg);
+    border-left: 3px solid var(--primary);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0 1rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+    animation: slideDown 0.3s ease;
+  }
+  .info-box.open { display: block; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .info-box h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin: 0 0 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .info-box h4:not(:first-child) { margin-top: 1rem; }
+  .info-box p { margin-bottom: 0.5rem; color: var(--text); }
+  .info-box table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+  .info-box th {
+    text-align: left;
+    padding: 0.4rem 0.5rem;
+    background: rgba(15,76,129,0.08);
+    color: var(--primary-dark);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+  .info-box td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .info-box td:first-child { font-weight: 600; white-space: nowrap; width: 70px; }
+  .info-box .example {
+    background: rgba(255,255,255,0.6);
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px dashed var(--border-strong);
+    margin: 0.4rem 0;
+  }
+  .info-box .impact {
+    color: var(--primary-dark);
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+
+  /* Lageeinschätzung-Box (collapsible) */
+  .lage-box {
+    background: linear-gradient(180deg, #FAF8F2 0%, #F5F1E8 100%);
+    border: 1.5px solid var(--accent);
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+  }
+  .lage-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.2s;
+  }
+  .lage-toggle:hover { background: rgba(232,179,57,0.1); }
+  .lage-toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+  }
+  .lage-toggle-left .lage-icon {
+    background: var(--accent);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .lage-toggle-text {
+    flex: 1;
+  }
+  .lage-toggle-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--primary-dark);
+    margin-bottom: 0.15rem;
+  }
+  .lage-toggle-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .lage-arrow {
+    font-size: 0.75rem;
+    color: var(--primary-dark);
+    background: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s;
+    border: 1px solid var(--accent);
+  }
+  .lage-box.open .lage-arrow { transform: rotate(180deg); }
+  .lage-content {
+    padding: 0 1.25rem 1.25rem;
+    display: none;
+  }
+  .lage-box.open .lage-content { display: block; }
+
+  .lage-section {
+    margin-bottom: 1rem;
+  }
+  .lage-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+  }
+  .lage-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.5);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .lage-table td {
+    padding: 0.45rem 0.7rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .lage-table tr:last-child td { border-bottom: none; }
+  .lage-table td:first-child {
+    color: var(--text-muted);
+    width: 50%;
+  }
+  .lage-table td:last-child {
+    font-weight: 500;
+    text-align: right;
+  }
+  .lage-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .lage-list li {
+    padding: 0.3rem 0 0.3rem 1.5rem;
+    position: relative;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .lage-list.staerken li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: 700;
+  }
+  .lage-list.schwaechen li::before {
+    content: "✗";
+    position: absolute;
+    left: 0;
+    color: var(--danger);
+    font-weight: 700;
+  }
+  .lage-attraktivitaet {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    margin-top: 0.75rem;
+  }
+  .attr-scale {
+    display: flex;
+    gap: 4px;
+    margin: 0.6rem 0 0.4rem;
+  }
+  .attr-dot {
+    flex: 1;
+    height: 14px;
+    border-radius: 3px;
+    background: var(--border);
+  }
+  .attr-dot.filled { background: var(--accent); }
+  .attr-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.7rem;
+  }
+  .attr-conclusion {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .attr-conclusion strong {
+    color: var(--primary-dark);
+  }
+
+  /* Slider */
+  .slider-wrap {
+    margin-top: 0.75rem;
+  }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    outline: none;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 1px 4px rgba(15,76,129,0.4);
+  }
+  .slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 1px 4px rgba(15,76,129,0.4);
+  }
+  .slider-value {
+    min-width: 56px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--primary);
+    background: var(--info-bg);
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.3rem;
+    padding: 0 4px;
+  }
+
+  /* Family Input */
+  .family-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    margin-top: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .family-input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  /* Wartequalität Block */
+  .scenarios {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .scenario {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    border-left: 3px solid;
+  }
+  .scenario.b1 { border-left-color: var(--success); }
+  .scenario.b2 { border-left-color: var(--warning); }
+  .scenario.b3 { border-left-color: var(--danger); }
+
+  .scenario-label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 0.95rem;
+  }
+  .scenario-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .sum-display {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .sum-display.valid {
+    background: rgba(45,122,62,0.1);
+    color: var(--success);
+    border: 1px solid rgba(45,122,62,0.3);
+  }
+  .sum-display.invalid {
+    background: rgba(184,58,58,0.08);
+    color: var(--danger);
+    border: 1px solid rgba(184,58,58,0.25);
+  }
+
+  /* Time Capacity Buttons (Frage 6 NEU) */
+  .time-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Sub-Slider for Standort (5 Sub-Kriterien) */
+  .sub-criteria {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .sub-criteria-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+  }
+  .sub-criterion {
+    margin-bottom: 1.1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sub-criterion:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .sub-criterion-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+    color: var(--text);
+  }
+  .sub-criterion-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+  }
+  .sub-criterion-input {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+  .sub-criterion-input input[type="text"] {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .sub-criterion-input input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .sub-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+  .sub-btn {
+    background: white;
+    border: 2px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 0.6rem 0.4rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    text-align: center;
+    font-size: 0.78rem;
+  }
+  .sub-btn:hover {
+    border-color: var(--primary-light);
+    background: var(--info-bg);
+  }
+  .sub-btn.selected {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+  }
+  .sub-btn-value {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 0.15rem;
+  }
+  .sub-btn.selected .sub-btn-value { color: rgba(255,255,255,0.85); }
+  .sub-score-display {
+    background: var(--info-bg);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--primary-dark);
+    font-weight: 600;
+  }
+  .sub-score-display .big {
+    font-size: 1.4rem;
+    color: var(--primary);
+    margin: 0 0.3rem;
+  }
+  .sub-mode-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .sub-mode-btn {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    background: white;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .sub-mode-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  /* Investment Slider (Schritt 3) */
+  .invest-slider-block {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    border-left: 3px solid var(--accent);
+  }
+  .invest-slider-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--primary-dark);
+  }
+  .invest-slider-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+  }
+  .invest-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.4rem;
+  }
+  .invest-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+    flex-shrink: 0;
+    width: 90px;
+  }
+  .invest-label.right { text-align: right; }
+  .invest-slider-track {
+    flex: 1;
+  }
+  .invest-position-label {
+    font-size: 0.82rem;
+    color: var(--primary-dark);
+    text-align: center;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+  .invest-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+  .invest-table th, .invest-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .invest-table th {
+    background: rgba(15,76,129,0.08);
+    font-weight: 600;
+    color: var(--primary-dark);
+  }
+  .invest-table td:nth-child(2) {
+    font-weight: 600;
+    color: var(--primary);
+    text-align: center;
+    width: 70px;
+  }
+  .time-btn {
+    background: white;
+    border: 2px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 1rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    text-align: center;
+  }
+  .time-btn:hover {
+    border-color: var(--primary-light);
+    background: var(--info-bg);
+    transform: translateY(-1px);
+  }
+  .time-btn.selected {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(15,76,129,0.25);
+  }
+  .time-btn-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+  .time-btn-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
+  }
+  .time-btn-desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+  .time-btn.selected .time-btn-desc { color: rgba(255,255,255,0.85); }
+
+  /* Result */
+  .result {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    border: 2px solid var(--primary);
+    box-shadow: var(--shadow-md);
+    display: none;
+  }
+  .result.show { display: block; }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .result-recommendation {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+  }
+  .result-recommendation.kaufen { color: var(--success); }
+  .result-recommendation.warten { color: var(--warning); }
+  .result-recommendation.patt { color: var(--text-muted); }
+
+  .scores {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .score-card {
+    text-align: center;
+    padding: 1.25rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .score-card.kaufen-card { background: rgba(45,122,62,0.05); border-color: rgba(45,122,62,0.2); }
+  .score-card.warten-card { background: rgba(201,125,39,0.05); border-color: rgba(201,125,39,0.2); }
+
+  .score-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+  }
+  .score-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .score-card.kaufen-card .score-value { color: var(--success); }
+  .score-card.warten-card .score-value { color: var(--warning); }
+
+  .score-detail {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .score-weight {
+    font-size: 0.75rem;
+    color: var(--primary-dark);
+    background: var(--info-bg);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 0.3rem;
+    font-weight: 600;
+  }
+
+  .reasoning {
+    background: var(--info-bg);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  .reasoning h3 {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+    color: var(--primary-dark);
+  }
+
+  /* Sensitivity */
+  .sensitivity {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .sensitivity h3 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--primary-dark);
+  }
+  .sens-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+  .sens-item:last-child { border-bottom: none; }
+  .sens-item strong { color: var(--text); }
+
+  /* Buttons */
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .btn {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.85rem 1.5rem;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    background: white;
+    color: var(--primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn:hover {
+    background: var(--info-bg);
+  }
+  .btn.primary {
+    background: var(--primary);
+    color: white;
+  }
+  .btn.primary:hover {
+    background: var(--primary-dark);
+  }
+
+  .calculate-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-md);
+  }
+  .calculate-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+  .calculate-btn:disabled {
+    background: var(--border-strong);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Print Styles */
+  @media print {
+    body { background: white; padding: 1rem; }
+    .header { background: var(--primary) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .info-box, .progress-bar, .actions { display: none !important; }
+    .card, .result { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+    .calculate-btn { display: none; }
+    .lage-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .lage-content { display: block !important; }
+    .lage-arrow { display: none; }
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .container { padding: 1rem 0.75rem 3rem; }
+    .header { padding: 1.5rem 1rem; }
+    .header h1 { font-size: 1.4rem; }
+    .card { padding: 1.25rem; }
+    .scores { grid-template-columns: 1fr; }
+    .btn { min-width: 100%; }
+    .progress-bar { position: static; }
+    .time-buttons { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Entscheidungs-Wizard: Effingen kaufen?</h1>
+    <p>Hilft jeder Familie, eine objektive und transparente Einschätzung zur Effingen-Chance zu treffen.</p>
+    <div class="badge">Test-Version v9 · Symmetrische Zeit-Wirkung ±21%</div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    <div class="progress-text" id="progressText">0 / 7</div>
+  </div>
+
+  <!-- Step 0: Family Identification -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">0</div>
+      <div>
+        <div class="card-title">Wer füllt diese Bewertung aus?</div>
+        <div class="card-subtitle">Damit später nachvollziehbar ist, wessen Einschätzung dies ist.</div>
+      </div>
+    </div>
+    <input type="text" class="family-input" id="familyName" placeholder="z.B. Familie Müller" oninput="updateProgress()">
+  </div>
+
+  <!-- Step 1: Effingen-Objekt-Qualität -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">1</div>
+      <div style="flex: 1;">
+        <div class="card-title">
+          Effingen-Objekt-Qualität
+          <button class="info-btn" onclick="toggleInfo('info1', this)">i</button>
+        </div>
+        <div class="card-subtitle">Wie gut passt das konkrete Objekt zu eurem Bedarf?</div>
+      </div>
+    </div>
+
+    <div class="info-box" id="info1">
+      <h4>Was ist gemeint?</h4>
+      <p>Bewertung der Doppelhaushälfte selbst — Bauqualität, Zimmer, Fläche, Garten, Ausbaustandard, Kaufpreis im Verhältnis zum Markt. <strong>Unabhängig vom Standort</strong>.</p>
+
+      <h4>Orientierungswerte</h4>
+      <table>
+        <tr><th>Wert</th><th>Bedeutung</th></tr>
+        <tr><td>9-10</td><td>Übertrifft Erwartungen — Premium-Objekt zum fairen Preis</td></tr>
+        <tr><td>7-8</td><td>Sehr gut — alle wichtigen Bedürfnisse erfüllt</td></tr>
+        <tr><td>5-6</td><td>Solide — passt grundsätzlich, einige Kompromisse</td></tr>
+        <tr><td>3-4</td><td>Mittelmässig — fühlt sich nach Kompromiss an</td></tr>
+        <tr><td>1-2</td><td>Schlecht — viele Mängel oder schlechtes Preis-Leistungs-Verhältnis</td></tr>
+      </table>
+
+      <h4>Beispiele</h4>
+      <div class="example"><strong>Hoch (8/10):</strong> Modernes Objekt, alle Kernbedürfnisse erfüllt, marktgerechter Preis, kein nennenswerter Sanierungsbedarf.</div>
+      <div class="example"><strong>Tief (4/10):</strong> Kompromisse beim Grundriss, Sanierungsbedarf, Preis liegt über vergleichbaren Marktangeboten.</div>
+    </div>
+
+    <div class="slider-wrap">
+      <div class="slider-row">
+        <input type="range" min="1" max="10" value="5" class="slider" id="objektQ" oninput="updateSlider('objektQ')">
+        <div class="slider-value" id="objektQ-val">5</div>
+      </div>
+      <div class="slider-labels"><span>Schlecht</span><span>Mittelmässig</span><span>Sehr gut</span></div>
+    </div>
+  </div>
+
+  <!-- Step 2: Standort Effingen mit ausklappbarer Lageeinschätzung -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">2</div>
+      <div style="flex: 1;">
+        <div class="card-title">
+          Standort Effingen
+          <button class="info-btn" onclick="toggleInfo('info2', this)">i</button>
+        </div>
+        <div class="card-subtitle">Wie tragbar ist Effingen als Wohnort langfristig?</div>
+      </div>
+    </div>
+
+    <div class="info-box" id="info2">
+      <h4>Was ist gemeint?</h4>
+      <p>Bewertung des Standorts unabhängig vom konkreten Objekt. Berücksichtigt Schule, Pendelzeit, Lärmbelastung, Einkaufsmöglichkeiten, Lebensqualität, Naherholung.</p>
+
+      <h4>Orientierungswerte</h4>
+      <table>
+        <tr><th>Wert</th><th>Bedeutung</th></tr>
+        <tr><td>9-10</td><td>Hervorragender Standort — alle Kriterien stark</td></tr>
+        <tr><td>7-8</td><td>Sehr gut — Schwächen tolerierbar</td></tr>
+        <tr><td>5-6</td><td>Akzeptabel — bewusste Kompromisse</td></tr>
+        <tr><td>3-4</td><td>Problematisch — mehrere Schwächen wiegen schwer</td></tr>
+        <tr><td>1-2</td><td>Nicht tragbar — Standort schadet langfristig der Familie</td></tr>
+      </table>
+    </div>
+
+    <!-- LAGEEINSCHÄTZUNG-BOX (jetzt ausklappbar) -->
+    <div class="lage-box" id="lageBox">
+      <button class="lage-toggle" onclick="toggleLage()">
+        <div class="lage-toggle-left">
+          <span class="lage-icon">i</span>
+          <div class="lage-toggle-text">
+            <div class="lage-toggle-title">Objektive Lageeinschätzung Effingen</div>
+            <div class="lage-toggle-meta">Faktenbasis · ZKB-Bericht, AKB, RealAdvisor, NAB Immo-Index</div>
+          </div>
+        </div>
+        <div class="lage-arrow">▼</div>
+      </button>
+
+      <div class="lage-content">
+        <div class="lage-section">
+          <div class="lage-section-title">🏠 Preisniveau & Wertentwicklung</div>
+          <table class="lage-table">
+            <tr><td>Effingen-Preisniveau (STW Neubau)</td><td>6'200 – 7'300 CHF/m²</td></tr>
+            <tr><td>Schweizer Vergleich Preisniveau</td><td>Rang 1'337 / 2'110</td></tr>
+            <tr><td>Kanton Aargau Median (Häuser)</td><td>~7'325 CHF/m²</td></tr>
+            <tr><td>Aargau Wertsteigerung 25 Jahre</td><td>+75% (Häuser)</td></tr>
+            <tr><td>Aargau aktuelle 12-Monats-Veränderung</td><td>−1% bis +3% (Seitwärtstrend)</td></tr>
+            <tr><td>Bezirk Laufenburg (Marktdynamik)</td><td>moderate Preisdynamik</td></tr>
+            <tr><td>Bezirk Brugg (Vergleich)</td><td>deutliche Wertsteigerungen</td></tr>
+          </table>
+        </div>
+
+        <div class="lage-section">
+          <div class="lage-section-title">✓ Stärken</div>
+          <ul class="lage-list staerken">
+            <li>Tiefes Preisniveau — günstiger Markteinstieg</li>
+            <li>Bevölkerungswachstum stark (+1.3% pro Jahr)</li>
+            <li>Gute Verkehrsanbindung MIV (CH-Rang 132)</li>
+            <li>REL 2025 in aktiver Erarbeitung — klare Strategie</li>
+            <li>Tiefe Steuerbelastung im Kantons-Vergleich</li>
+          </ul>
+        </div>
+
+        <div class="lage-section">
+          <div class="lage-section-title">✗ Schwächen</div>
+          <ul class="lage-list schwaechen">
+            <li>Schulangebot schwach (CH-Rang 1'726 / 2'110)</li>
+            <li>Pendelzeit Zürich >70 Min ÖV (peripher)</li>
+            <li>Lärm gross (A3 + Bözbergstrasse)</li>
+            <li>Geringere Wertsteigerungsdynamik als Zentrumsgemeinden</li>
+            <li>Junge Fusionsgemeinde (2022) — Reglemente noch in Konsolidierung</li>
+          </ul>
+        </div>
+
+        <div class="lage-attraktivitaet">
+          <div class="lage-section-title">📈 Langfristige Attraktivität im Schweizer Vergleich</div>
+          <div class="attr-scale">
+            <div class="attr-dot filled"></div>
+            <div class="attr-dot filled"></div>
+            <div class="attr-dot filled"></div>
+            <div class="attr-dot"></div>
+            <div class="attr-dot"></div>
+            <div class="attr-dot"></div>
+            <div class="attr-dot"></div>
+            <div class="attr-dot"></div>
+            <div class="attr-dot"></div>
+            <div class="attr-dot"></div>
+          </div>
+          <div class="attr-labels">
+            <span>unten</span>
+            <span>durchschnittlich</span>
+            <span>oben</span>
+          </div>
+          <div class="attr-conclusion">
+            Effingen liegt im <strong>unteren Drittel</strong> der langfristigen Wertentwicklungs-Attraktivität für Schweizer Wohnimmobilien. Die Wertsteigerung ist unterdurchschnittlich im Vergleich zu Zentrumslagen wie Brugg, Aarau oder Baden. Die Nachfrage wird durch Pendler-Druck Zürich/Basel gestützt. Die ländliche Lage mit Ortsbildschutz dämpft die Aufwertung. <strong>Effingen entspricht primär einer Wohnnutzungs-Lage; die Wertentwicklung ist objektiv unterdurchschnittlich.</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slider-wrap">
+      <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+        Eure persönliche Standortbewertung:
+      </div>
+
+      <div class="sub-mode-toggle">
+        <button class="sub-mode-btn active" id="standort-mode-simple" onclick="switchStandortMode('simple')">Einfach (1 Slider)</button>
+        <button class="sub-mode-btn" id="standort-mode-detail" onclick="switchStandortMode('detail')">Detailliert (5 Sub-Kriterien)</button>
+      </div>
+
+      <!-- Mode 1: Simple Slider -->
+      <div id="standort-simple">
+        <div class="slider-row">
+          <input type="range" min="1" max="10" value="5" class="slider" id="standort" oninput="updateSlider('standort')">
+          <div class="slider-value" id="standort-val">5</div>
+        </div>
+        <div class="slider-labels"><span>Sehr schlecht</span><span>Mittel</span><span>Sehr gut</span></div>
+      </div>
+
+      <!-- Mode 2: 5 Sub-Criteria -->
+      <div id="standort-detail" style="display: none;">
+        <div class="sub-criteria">
+          <div class="sub-criteria-title">Standort-Bewertung in 5 Kategorien</div>
+
+          <!-- 1. Arbeitsweg -->
+          <div class="sub-criterion">
+            <div class="sub-criterion-label">1. Arbeitsweg (einfache Strecke) <span style="float: right; font-size: 0.78rem; color: var(--primary); font-weight: 500;">Gewicht: 30%</span></div>
+            <div class="sub-criterion-desc">Tragt euren konkreten Arbeitsort und das Hauptverkehrsmittel ein. Bewertet die einfache Pendelzeit von Effingen aus.</div>
+            <div class="sub-criterion-input">
+              <input type="text" id="standort-arbeitsort" placeholder="z.B. Zürich (ÖV) — 50 Min" oninput="updateProgress()">
+            </div>
+            <div class="sub-buttons" id="sub-arbeit">
+              <button class="sub-btn" onclick="selectSub('arbeit', 1, this)">Belastend<span class="sub-btn-value">>60 Min</span></button>
+              <button class="sub-btn" onclick="selectSub('arbeit', 2, this)">Mässig<span class="sub-btn-value">45-60 Min</span></button>
+              <button class="sub-btn" onclick="selectSub('arbeit', 3, this)">Akzeptabel<span class="sub-btn-value">30-45 Min</span></button>
+              <button class="sub-btn" onclick="selectSub('arbeit', 4, this)">Top<span class="sub-btn-value"><30 Min</span></button>
+            </div>
+          </div>
+
+          <!-- 2. Schule -->
+          <div class="sub-criterion">
+            <div class="sub-criterion-label">2. Schule (Kindergarten bis Sekundarstufe) <span style="float: right; font-size: 0.78rem; color: var(--primary); font-weight: 500;">Gewicht: 25%</span></div>
+            <div class="sub-criterion-desc">Wie gut ist die Schulversorgung für eure aktuellen oder zukünftigen Kinder?</div>
+            <div class="sub-buttons" id="sub-schule">
+              <button class="sub-btn" onclick="selectSub('schule', 1, this)">Belastend<span class="sub-btn-value">Pendeln ab Primar</span></button>
+              <button class="sub-btn" onclick="selectSub('schule', 2, this)">Mässig<span class="sub-btn-value">Oberstufe schwer</span></button>
+              <button class="sub-btn" onclick="selectSub('schule', 3, this)">Akzeptabel<span class="sub-btn-value">Oberstufe per Bus</span></button>
+              <button class="sub-btn" onclick="selectSub('schule', 4, this)">Top<span class="sub-btn-value">Volksschule + Sek II</span></button>
+            </div>
+          </div>
+
+          <!-- 3. Einkauf -->
+          <div class="sub-criterion">
+            <div class="sub-criterion-label">3. Einkauf / Grundversorgung <span style="float: right; font-size: 0.78rem; color: var(--primary); font-weight: 500;">Gewicht: 15%</span></div>
+            <div class="sub-criterion-desc">Wie gut ist die tägliche Versorgung im Dorf erreichbar?</div>
+            <div class="sub-buttons" id="sub-einkauf">
+              <button class="sub-btn" onclick="selectSub('einkauf', 1, this)">Belastend<span class="sub-btn-value">Kein Detaillist</span></button>
+              <button class="sub-btn" onclick="selectSub('einkauf', 2, this)">Mässig<span class="sub-btn-value">Detaillist, GV 10-20 Min</span></button>
+              <button class="sub-btn" onclick="selectSub('einkauf', 3, this)">Akzeptabel<span class="sub-btn-value">Detaillist + GV <10 Min</span></button>
+              <button class="sub-btn" onclick="selectSub('einkauf', 4, this)">Top<span class="sub-btn-value">Grossverteiler im Dorf</span></button>
+            </div>
+          </div>
+
+          <!-- 4. Lärm -->
+          <div class="sub-criterion">
+            <div class="sub-criterion-label">4. Lärm-Mikrolage <span style="float: right; font-size: 0.78rem; color: var(--primary); font-weight: 500;">Gewicht: 20%</span></div>
+            <div class="sub-criterion-desc">Wie laut ist es an der konkreten Wohnadresse (Tagespegel)?</div>
+            <div class="sub-buttons" id="sub-laerm">
+              <button class="sub-btn" onclick="selectSub('laerm', 1, this)">Belastend<span class="sub-btn-value">>70 dB</span></button>
+              <button class="sub-btn" onclick="selectSub('laerm', 2, this)">Mässig<span class="sub-btn-value">60-70 dB</span></button>
+              <button class="sub-btn" onclick="selectSub('laerm', 3, this)">Akzeptabel<span class="sub-btn-value">50-60 dB</span></button>
+              <button class="sub-btn" onclick="selectSub('laerm', 4, this)">Top<span class="sub-btn-value"><50 dB</span></button>
+            </div>
+          </div>
+
+          <!-- 5. Naherholung -->
+          <div class="sub-criterion">
+            <div class="sub-criterion-label">5. Naherholung / Natur <span style="float: right; font-size: 0.78rem; color: var(--primary); font-weight: 500;">Gewicht: 10%</span></div>
+            <div class="sub-criterion-desc">Wie schnell ist Wald, Park oder Naturraum erreichbar?</div>
+            <div class="sub-buttons" id="sub-natur">
+              <button class="sub-btn" onclick="selectSub('natur', 1, this)">Belastend<span class="sub-btn-value">Nur mit Auto</span></button>
+              <button class="sub-btn" onclick="selectSub('natur', 2, this)">Mässig<span class="sub-btn-value">15+ Min zu Fuss</span></button>
+              <button class="sub-btn" onclick="selectSub('natur', 3, this)">Akzeptabel<span class="sub-btn-value">5-15 Min zu Fuss</span></button>
+              <button class="sub-btn" onclick="selectSub('natur', 4, this)">Top<span class="sub-btn-value"><5 Min zu Fuss</span></button>
+            </div>
+          </div>
+
+          <div class="sub-score-display" id="standort-detail-score">
+            Berechneter Standort-Score: <span class="big" id="standort-detail-val">—</span>/ 10
+            <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: normal; margin-top: 0.3rem;">
+              Bewertung pro Stufe: Belastend = 1.5 · Mässig = 4.0 · Akzeptabel = 7.0 · Top = 9.5<br>
+              Gewichtet nach Alltagsrelevanz (Arbeitsweg 30%, Schule 25%, Lärm 20%, Einkauf 15%, Naherholung 10%)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: 4-Parteien-Wert -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">3</div>
+      <div style="flex: 1;">
+        <div class="card-title">
+          Konstellations-Abhängigkeit + Nutzungsabsicht
+          <button class="info-btn" onclick="toggleInfo('info3', this)">i</button>
+        </div>
+        <div class="card-subtitle">Wie stark hängt euer Kaufinteresse von der 4-Parteien-Konstellation ab — und wie stark spielt Investitions-Aspekt eine Rolle?</div>
+      </div>
+    </div>
+
+    <div class="info-box" id="info3">
+      <h4>Was ist gemeint?</h4>
+      <p><strong>3a) Konstellations-Abhängigkeit:</strong> Wie stark hängt euer Kaufinteresse davon ab, dass alle 4 Familien dabei sind? Würdet ihr das Objekt auch alleine kaufen, oder ist die Konstellation unverzichtbar?</p>
+      <p><strong>3b) Familienleben vs. Investition:</strong> Wenn ihr das Objekt kauft — soll es primär als Zuhause dienen oder auch als Kapitalanlage funktionieren? Der Slider verschiebt zwischen beiden Polen.</p>
+
+      <h4>Orientierungswerte 3a</h4>
+      <table>
+        <tr><th>Wert</th><th>Bedeutung</th></tr>
+        <tr><td>9-10</td><td>Ohne diese Konstellation würden wir nicht kaufen</td></tr>
+        <tr><td>7-8</td><td>Konstellation ist sehr wichtig, aber nicht zwingend</td></tr>
+        <tr><td>5-6</td><td>Mittelweg — wäre auch ohne machbar</td></tr>
+        <tr><td>3-4</td><td>Konstellation ist Bonus, nicht entscheidend</td></tr>
+        <tr><td>1-2</td><td>Wir würden auch alleine kaufen</td></tr>
+      </table>
+
+      <h4>Investment-Faktoren Effingen (statisch)</h4>
+      <p>Wenn ihr den Investment-Slider aufzieht, fliessen folgende objektive Werte für Effingen ein:</p>
+      <table class="invest-table">
+        <tr><th>Faktor</th><th>Wert</th><th>Begründung</th></tr>
+        <tr><td>Wertsteigerung</td><td>3 / 10</td><td>Unteres Drittel CH (Lageeinschätzung). Bezirk Laufenburg moderate Dynamik vs. Bezirk Brugg höhere Wertsteigerung.</td></tr>
+        <tr><td>Mietrendite</td><td>5 / 10</td><td>Tiefer Kaufpreis, aber tiefe Mietzinse → neutrale Bruttorendite. Doppelhaushälften sind keine klassischen Renditeobjekte.</td></tr>
+        <tr><td>Liquidität</td><td>4 / 10</td><td>Kleinerer Sekundärmarkt, Cluster-Charakter limitiert Käuferkreis bei späterem Verkauf.</td></tr>
+        <tr><td>Steuerliche Aspekte</td><td>6 / 10</td><td>AG steuerattraktiv, Effingen mittlere Belastung im Kanton. EMW-Abschaffung ab 2028 wirkt positiv für Selbstbewohner.</td></tr>
+        <tr><td><strong>Mittelwert</strong></td><td><strong>4.5</strong></td><td>Investment-mässig unter Durchschnitt</td></tr>
+      </table>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;">Quellen: ZKB Gemeindebericht März 2026, AKB Immobilienbarometer Nov 2025, Kanton Aargau (Liegenschafts-Neubewertung 2025)</p>
+    </div>
+
+    <div class="slider-wrap">
+      <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500;">
+        3a) Wie stark hängt euer Kaufinteresse von der 4-Parteien-Konstellation ab?
+      </div>
+      <div class="slider-row">
+        <input type="range" min="1" max="10" value="5" class="slider" id="vierP" oninput="updateSlider('vierP')">
+        <div class="slider-value" id="vierP-val">5</div>
+      </div>
+      <div class="slider-labels"><span>Auch alleine</span><span>Mittelweg</span><span>Nur mit Cluster</span></div>
+    </div>
+
+    <!-- Investment Slider Block (NEU) -->
+    <div class="invest-slider-block">
+      <div class="invest-slider-title">3b) Familienleben vs. Investition</div>
+      <div class="invest-slider-desc">Soll das Objekt primär als Zuhause dienen oder auch als Kapitalanlage? Bei reinem Familienleben (0%) zählt nur der 4-Parteien-Wert. Bei reiner Investition (100%) zählen die statischen Investment-Faktoren für Effingen.</div>
+      <div class="invest-row">
+        <div class="invest-label">Familien-<br>leben</div>
+        <div class="invest-slider-track">
+          <input type="range" min="0" max="100" step="5" value="0" class="slider" id="invest" oninput="updateInvest()">
+        </div>
+        <div class="invest-label right">Inves-<br>tition</div>
+      </div>
+      <div class="slider-labels" style="padding: 0 100px;">
+        <span>0%</span><span>50%</span><span>100%</span>
+      </div>
+      <div class="invest-position-label" id="invest-position">100% Familienleben — reine Wohnnutzung</div>
+    </div>
+  </div>
+
+  <!-- Step 4: Optimierung vs. Sicherheit (statt "Druck") -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">4</div>
+      <div style="flex: 1;">
+        <div class="card-title">
+          Optimierung vs. Sicherheit
+          <button class="info-btn" onclick="toggleInfo('info4', this)">i</button>
+        </div>
+        <div class="card-subtitle">Was ist euch wichtiger: das beste Objekt finden oder jetzt Klarheit haben?</div>
+      </div>
+    </div>
+
+    <div class="info-box" id="info4">
+      <h4>Was ist gemeint?</h4>
+      <p>Diese Frage misst eure <strong>Präferenz für Entscheidungssicherheit</strong>. Sie ist bewusst neutral formuliert — sie soll nicht implizit Druck oder Stress als Kauf-Argument einbauen.</p>
+      <p>Wenn ihr Optimierung bevorzugt, gewichtet das Tool den Score "Warten" stärker — denn wer optimieren will, braucht Zeit zum Vergleichen. Wenn ihr Sicherheit bevorzugt, gewichtet das Tool den Score "Kaufen jetzt" stärker — denn wer Sicherheit will, möchte abschliessen.</p>
+
+      <h4>Orientierungswerte</h4>
+      <table>
+        <tr><th>Wert</th><th>Bedeutung</th></tr>
+        <tr><td>1-2</td><td>Klar Optimierung — wir wollen das objektiv beste Objekt finden, auch wenn es länger dauert</td></tr>
+        <tr><td>3-4</td><td>Eher Optimierung — Zeit ist okay, das Richtige zu finden</td></tr>
+        <tr><td>5-6</td><td>Beides gleichwertig — wir entscheiden je nach Situation</td></tr>
+        <tr><td>7-8</td><td>Eher Sicherheit — wir möchten bald Klarheit haben</td></tr>
+        <tr><td>9-10</td><td>Klar Sicherheit — jetzt entscheiden, abschliessen, Ruhe</td></tr>
+      </table>
+
+      <h4>Gewichtung Kaufen vs. Warten</h4>
+      <table>
+        <tr><th>Wert</th><th>Gewichtung Kaufen / Warten</th></tr>
+        <tr><td>10</td><td>75% / 25% — klare Sicherheits-Präferenz</td></tr>
+        <tr><td>7-8</td><td>60% / 40%</td></tr>
+        <tr><td>5-6</td><td>50% / 50% — neutral</td></tr>
+        <tr><td>3-4</td><td>40% / 60%</td></tr>
+        <tr><td>1-2</td><td>30% / 70% — klare Optimierungs-Präferenz</td></tr>
+      </table>
+    </div>
+
+    <div class="slider-wrap">
+      <div class="slider-row">
+        <input type="range" min="1" max="10" value="5" class="slider" id="druck" oninput="updateSlider('druck')">
+        <div class="slider-value" id="druck-val">5</div>
+      </div>
+      <div class="slider-labels"><span>Optimierung</span><span>Beides gleich</span><span>Sicherheit</span></div>
+    </div>
+  </div>
+
+  <!-- Step 5: Markteinschätzung (NEU - 2 unabhängige Slider 1-10) -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">5</div>
+      <div style="flex: 1;">
+        <div class="card-title">
+          Markteinschätzung (12 Monate)
+          <button class="info-btn" onclick="toggleInfo('info5', this)">i</button>
+        </div>
+        <div class="card-subtitle">Zwei unabhängige Einschätzungen — kein 100%-Zwang.</div>
+      </div>
+    </div>
+
+    <div class="info-box" id="info5">
+      <h4>Was ist gemeint?</h4>
+      <p>Diese zwei Slider sind <strong>vollständig unabhängig</strong>. Ihr könnt jede Frage einzeln und ehrlich bewerten, ohne sie gegen die andere abwägen zu müssen.</p>
+
+      <h4>5a) Markteinschätzung</h4>
+      <p>Wenn ihr in den nächsten 12 Monaten weitersucht — wie schätzt ihr den Markt ein? Findet ihr eher Besseres oder eher Schlechteres als Effingen?</p>
+      <table>
+        <tr><th>Wert</th><th>Bedeutung</th></tr>
+        <tr><td>1-2</td><td>Sehr pessimistisch — wir finden eher schlechtere Objekte als Effingen</td></tr>
+        <tr><td>3-4</td><td>Pessimistisch — Markt ist eng</td></tr>
+        <tr><td>5-6</td><td>Neutral — vergleichbares Niveau zu Effingen erwartet</td></tr>
+        <tr><td>7-8</td><td>Optimistisch — wir finden eher Besseres</td></tr>
+        <tr><td>9-10</td><td>Sehr optimistisch — Markt bietet uns viele bessere Optionen</td></tr>
+      </table>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">→ Skalierung: Slider 1 entspricht Effingen-Score − 1.5, Slider 5 = Effingen-Score, Slider 10 = Effingen-Score + 1.5</p>
+
+      <h4>5b) Konstellations-Risiko</h4>
+      <p>Wie hoch ist das Risiko, dass die 4-Parteien-Möglichkeit innerhalb der nächsten 12 Monate verloren geht (Familie steigt aus, Lebenssituation ändert sich, etc.)?</p>
+      <table>
+        <tr><th>Wert</th><th>Bedeutung</th></tr>
+        <tr><td>1-2</td><td>Sehr niedriges Risiko — Konstellation ist verbindlich, stabil</td></tr>
+        <tr><td>3-4</td><td>Niedriges Risiko</td></tr>
+        <tr><td>5-6</td><td>Mittleres Risiko — Unsicherheiten vorhanden</td></tr>
+        <tr><td>7-8</td><td>Hohes Risiko — mehrere Familien zögern oder haben offene Punkte</td></tr>
+        <tr><td>9-10</td><td>Sehr hohes Risiko — Konstellation ist fragil</td></tr>
+      </table>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">→ Skalierung: Slider 1 = 15% Risiko, Slider 5 = 42%, Slider 10 = 75%</p>
+
+      <h4>Wie wirken die zwei Slider zusammen?</h4>
+      <p>Score Warten = (Marktscore × (1 − Risiko-Anteil) + Worst-Case-Score × Risiko-Anteil) × Zeit-Modifier</p>
+      <p>Falls die Konstellation hält → Marktscore dominiert. Falls sie nicht hält → Worst-Case-Score (Effingen − Konstellations-Strafe aus Frage 3a) dominiert. Der Zeit-Modifier wirkt symmetrisch: kurze Zeit straft, lange Zeit belohnt (Mittelpunkt: 6-12 Monate).</p>
+    </div>
+
+    <div class="scenarios">
+      <div class="scenario b1">
+        <div class="scenario-label">5a) Markteinschätzung</div>
+        <div class="scenario-desc">Wie schätzt ihr den Markt für eure Suche in 12 Monaten ein?</div>
+        <div class="slider-row">
+          <input type="range" min="1" max="10" value="5" class="slider" id="markt" oninput="updateSlider('markt')">
+          <div class="slider-value" id="markt-val">5</div>
+        </div>
+        <div class="slider-labels"><span>Sehr pessimistisch</span><span>Neutral</span><span>Sehr optimistisch</span></div>
+      </div>
+
+      <div class="scenario b3">
+        <div class="scenario-label">5b) Konstellations-Risiko</div>
+        <div class="scenario-desc">Wie hoch ist das Risiko, dass die 4-Parteien-Möglichkeit verloren geht?</div>
+        <div class="slider-row">
+          <input type="range" min="1" max="10" value="5" class="slider" id="risiko" oninput="updateSlider('risiko')">
+          <div class="slider-value" id="risiko-val">5</div>
+        </div>
+        <div class="slider-labels"><span>Sehr niedrig</span><span>Mittel</span><span>Sehr hoch</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6: Zeitkapazität (Sprache neutraler) -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-number">6</div>
+      <div style="flex: 1;">
+        <div class="card-title">Verfügbare Zeit</div>
+        <div class="card-subtitle">Wie viel Zeit habt ihr realistisch, um auf eine bessere Lösung zu warten?</div>
+      </div>
+    </div>
+
+    <div class="time-buttons">
+      <button class="time-btn" data-value="3" onclick="selectTime(this, 3)">
+        <span class="time-btn-icon">⏱️</span>
+        <div class="time-btn-label">Maximal 3 Monate</div>
+        <div class="time-btn-desc">Sehr kurzes Zeitfenster</div>
+      </button>
+      <button class="time-btn" data-value="6" onclick="selectTime(this, 6)">
+        <span class="time-btn-icon">📅</span>
+        <div class="time-btn-label">3 bis 6 Monate</div>
+        <div class="time-btn-desc">Kurzes Zeitfenster</div>
+      </button>
+      <button class="time-btn" data-value="12" onclick="selectTime(this, 12)">
+        <span class="time-btn-icon">📆</span>
+        <div class="time-btn-label">6 bis 12 Monate</div>
+        <div class="time-btn-desc">Mittelfristiger Spielraum</div>
+      </button>
+      <button class="time-btn" data-value="24" onclick="selectTime(this, 24)">
+        <span class="time-btn-icon">🗓️</span>
+        <div class="time-btn-label">1 bis 2 Jahre</div>
+        <div class="time-btn-desc">Längerer Spielraum</div>
+      </button>
+      <button class="time-btn" data-value="36" onclick="selectTime(this, 36)">
+        <span class="time-btn-icon">🏝️</span>
+        <div class="time-btn-label">Mehr als 2 Jahre</div>
+        <div class="time-btn-desc">Lange Verfügbarkeit</div>
+      </button>
+    </div>
+
+    <div style="background: var(--info-bg); border-radius: 8px; padding: 0.85rem 1rem; margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+      <strong style="color: var(--primary-dark);">Wirkung auf Score Warten:</strong>
+      Maximal 3 Monate = −21% · 3-6 Monate = −10.5% · <strong>6-12 Monate = neutral (0%)</strong> · 1-2 Jahre = +10.5% · Mehr als 2 Jahre = +21%<br>
+      <em>Symmetrisch: Wenig Zeit straft, viel Zeit belohnt — gleicher Hebel in beide Richtungen.</em>
+    </div>
+  </div>
+
+  <button class="calculate-btn" onclick="calculate()">Empfehlung berechnen</button>
+
+  <!-- Result Section -->
+  <div class="result" id="resultSection">
+    <div class="result-header">
+      <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">Empfehlung für</div>
+      <div style="font-weight: 600; font-size: 1.1rem; margin: 0.3rem 0;" id="resultFamily">—</div>
+      <div class="result-recommendation" id="resultText">—</div>
+      <div style="font-size: 0.9rem; color: var(--text-muted);" id="resultConfidence">—</div>
+    </div>
+
+    <div class="scores">
+      <div class="score-card kaufen-card">
+        <div class="score-label">Score: Kaufen jetzt</div>
+        <div class="score-value" id="scoreKaufen">—</div>
+        <div class="score-detail" id="scoreKaufenDetail">—</div>
+        <div class="score-weight" id="scoreKaufenWeight">—</div>
+      </div>
+      <div class="score-card warten-card">
+        <div class="score-label">Score: Warten</div>
+        <div class="score-value" id="scoreWarten">—</div>
+        <div class="score-detail" id="scoreWartenDetail">—</div>
+        <div class="score-weight" id="scoreWartenWeight">—</div>
+      </div>
+    </div>
+
+    <div class="reasoning">
+      <h3>📊 Begründung</h3>
+      <div id="reasoningText">—</div>
+    </div>
+
+    <div class="sensitivity">
+      <h3>🔍 Sensitivitätsanalyse — was wenn anders?</h3>
+      <div id="sensitivityList">—</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" onclick="window.print()">📄 Als PDF speichern</button>
+      <button class="btn" onclick="resetForm()">🔄 Neu beginnen</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let selectedTime = null;
+  let standortMode = 'simple'; // 'simple' or 'detail'
+  let subValues = { arbeit: 0, schule: 0, einkauf: 0, laerm: 0, natur: 0 };
+
+  // Effingen Investment-Faktoren (statisch, aus Recherche)
+  const EFFINGEN_INVEST = {
+    wertsteigerung: 3,
+    mietrendite: 5,
+    liquiditaet: 4,
+    steuern: 6
+  };
+  const EFFINGEN_INVEST_AVG = (EFFINGEN_INVEST.wertsteigerung + EFFINGEN_INVEST.mietrendite + EFFINGEN_INVEST.liquiditaet + EFFINGEN_INVEST.steuern) / 4; // = 4.5
+
+  function toggleInfo(id, btn) {
+    const box = document.getElementById(id);
+    box.classList.toggle('open');
+    btn.classList.toggle('active');
+  }
+
+  function toggleLage() {
+    document.getElementById('lageBox').classList.toggle('open');
+  }
+
+  function updateSlider(id) {
+    const val = document.getElementById(id).value;
+    document.getElementById(id + '-val').textContent = val;
+    updateProgress();
+  }
+
+  function updateSliderPct(id) {
+    const val = document.getElementById(id).value;
+    document.getElementById(id + '-val').textContent = val + '%';
+    if (id === 'b1' || id === 'b2' || id === 'b3') {
+      checkSum();
+    }
+    updateProgress();
+  }
+
+  function selectTime(btn, value) {
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedTime = value;
+    updateProgress();
+  }
+
+  function switchStandortMode(mode) {
+    standortMode = mode;
+    document.getElementById('standort-mode-simple').classList.toggle('active', mode === 'simple');
+    document.getElementById('standort-mode-detail').classList.toggle('active', mode === 'detail');
+    document.getElementById('standort-simple').style.display = mode === 'simple' ? 'block' : 'none';
+    document.getElementById('standort-detail').style.display = mode === 'detail' ? 'block' : 'none';
+    updateProgress();
+  }
+
+  function selectSub(category, value, btn) {
+    subValues[category] = value;
+    const container = document.getElementById('sub-' + category);
+    container.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    updateStandortDetailScore();
+    updateProgress();
+  }
+
+  function updateStandortDetailScore() {
+    const allFilled = Object.values(subValues).every(v => v > 0);
+    if (allFilled) {
+      let score = 0;
+      for (const [key, weight] of Object.entries(SUB_WEIGHTS)) {
+        score += SUB_SCORE_MAP[subValues[key]] * weight;
+      }
+      document.getElementById('standort-detail-val').textContent = score.toFixed(1);
+    } else {
+      document.getElementById('standort-detail-val').textContent = '—';
+    }
+  }
+
+  function updateInvest() {
+    const val = parseInt(document.getElementById('invest').value);
+    const labelEl = document.getElementById('invest-position');
+    let label;
+    if (val === 0) label = '100% Familienleben — reine Wohnnutzung';
+    else if (val < 25) label = 'Wohnen klar im Vordergrund — Wertentwicklung sekundär';
+    else if (val < 50) label = 'Wohnen wichtiger, aber Wert zählt mit';
+    else if (val === 50) label = '50/50 — ausgewogen zwischen Wohnen und Investition';
+    else if (val < 75) label = 'Investition wichtiger, Familienleben mit';
+    else if (val < 100) label = 'Investition klar im Vordergrund — Lebensqualität sekundär';
+    else label = '100% Investition — reine Kapitalanlage';
+    labelEl.textContent = label;
+    updateProgress();
+  }
+
+  // Sub-Slider Kalibrierung: 1=Belastend, 2=Mässig, 3=Akzeptabel, 4=Top
+  // Neue Skala: 1.5 / 4.0 / 7.0 / 9.5 (statt linear × 2.5)
+  const SUB_SCORE_MAP = { 1: 1.5, 2: 4.0, 3: 7.0, 4: 9.5 };
+
+  // Gewichtung der 5 Standort-Kategorien (Summe = 100%)
+  const SUB_WEIGHTS = {
+    arbeit: 0.30,   // Arbeitsweg: täglich, schwer zu ändern
+    schule: 0.25,   // Schule: langfristig wichtig für Familien
+    laerm: 0.20,    // Lärm: Wohnqualität & Gesundheit
+    einkauf: 0.15,  // Einkauf: mit Auto kompensierbar
+    natur: 0.10     // Naherholung: schön zu haben, selten täglich
+  };
+
+  function getStandortScore() {
+    if (standortMode === 'simple') {
+      return parseInt(document.getElementById('standort').value);
+    } else {
+      const allFilled = Object.values(subValues).every(v => v > 0);
+      if (allFilled) {
+        // Gewichteter Score: Σ (calibratedValue × weight)
+        let score = 0;
+        for (const [key, weight] of Object.entries(SUB_WEIGHTS)) {
+          score += SUB_SCORE_MAP[subValues[key]] * weight;
+        }
+        return score;
+      }
+      return 5; // fallback
+    }
+  }
+
+  function isStandortValid() {
+    if (standortMode === 'simple') return true;
+    return Object.values(subValues).every(v => v > 0);
+  }
+
+  function updateProgress() {
+    const family = document.getElementById('familyName').value.trim();
+    let filled = family ? 1 : 0;
+
+    // Objekt
+    if (document.getElementById('objektQ').value !== '5') filled++;
+
+    // Standort (mode-dependent)
+    if (standortMode === 'simple') {
+      if (document.getElementById('standort').value !== '5') filled++;
+    } else {
+      if (Object.values(subValues).every(v => v > 0)) filled++;
+    }
+
+    // 4P-Wert
+    if (document.getElementById('vierP').value !== '5') filled++;
+
+    // Druck
+    if (document.getElementById('druck').value !== '5') filled++;
+
+    // Markteinschätzung — gefüllt wenn einer der zwei Slider von 5 abweicht
+    const markt = parseInt(document.getElementById('markt').value);
+    const risiko = parseInt(document.getElementById('risiko').value);
+    if (markt !== 5 || risiko !== 5) filled++;
+
+    // Zeitkapazität
+    if (selectedTime !== null) filled++;
+
+    const total = 7;
+    const pct = Math.round((filled / total) * 100);
+    document.getElementById('progress').style.width = pct + '%';
+    document.getElementById('progressText').textContent = filled + ' / ' + total;
+  }
+
+  function druckToWeights(druck) {
+    const kaufenWeight = 0.30 + (druck - 1) * (0.75 - 0.30) / 9;
+    return {
+      kaufen: kaufenWeight,
+      warten: 1 - kaufenWeight
+    };
+  }
+
+  // Lineare Zeit-Modifikation: symmetrisch ±21% um Mittelpunkt 6-12 Monate
+  // Stufe 1 (3M) = -21%, Stufe 3 (6-12M) = 0%, Stufe 5 (>2J) = +21%
+  function timeToModifier(months) {
+    const stufeMap = {3: 1, 6: 2, 12: 3, 24: 4, 36: 5};
+    const stufe = stufeMap[months] || 3;
+    return (stufe - 3) * 0.105;
+  }
+
+  function timeToFactor(months) {
+    // Behalten für Abwärtskompatibilität (z.B. Anzeige in Reasoning)
+    const map = {3: 0.30, 6: 0.50, 12: 0.70, 24: 0.85, 36: 1.00};
+    return map[months] || 0.70;
+  }
+
+  function timeToLabel(months) {
+    const map = {3: 'Maximal 3 Monate', 6: '3 bis 6 Monate', 12: '6 bis 12 Monate', 24: '1 bis 2 Jahre', 36: 'Mehr als 2 Jahre'};
+    return map[months] || '—';
+  }
+
+  // Markteinschätzung 1-10 → Modifier (-1.5 bis +1.5)
+  function marktToModifier(markt) {
+    // Slider 1 → -1.5, Slider 5 → 0, Slider 10 → +1.5
+    return (markt - 5) / 5 * 1.5;
+  }
+
+  // Konstellations-Risiko 1-10 → Anteil (15% bis 75%)
+  function risikoToAnteil(risiko) {
+    // Slider 1 → 0.15, Slider 5 → ~0.42, Slider 10 → 0.75
+    // Linear: 0.15 + (risiko - 1) * 0.60 / 9
+    return 0.15 + (risiko - 1) * 0.60 / 9;
+  }
+
+  function computeScores(inputs) {
+    // Investment-Modifikator
+    const investAnteil = inputs.invest / 100;
+    const wohnAnteil = 1 - investAnteil;
+    const dritterFaktor = inputs.vierP * wohnAnteil + EFFINGEN_INVEST_AVG * investAnteil;
+
+    const scoreKaufen = (inputs.objektQ + inputs.standort + dritterFaktor) / 3;
+
+    // NEU: Marktscore = Effingen + Markt-Modifikator (-1.0 bis +1.0)
+    const marktModifier = marktToModifier(inputs.markt);
+    const scoreMarkt = Math.max(0, Math.min(10, scoreKaufen + marktModifier));
+
+    // Worst-Case-Score: Effingen − Konstellations-Strafe (mild)
+    const scoreWorstCase = Math.max(0, scoreKaufen - (inputs.vierP / 10) * 1.5);
+
+    // Risiko-Anteil aus Slider
+    const risikoAnteil = risikoToAnteil(inputs.risiko);
+
+    // Erwartungswert: Mix aus Marktszenario und Worst-Case
+    const erwartungswert = scoreMarkt * (1 - risikoAnteil) + scoreWorstCase * risikoAnteil;
+
+    // Zeit-Modifikation: symmetrisch ±21% um neutralen Mittelpunkt (6-12 Monate)
+    const zeitFaktor = timeToFactor(inputs.zeitkapazitaet);
+    const zeitModifier = timeToModifier(inputs.zeitkapazitaet);
+    const zeitDaempfung = 1 + zeitModifier; // Bezeichnung beibehalten für Anzeige
+    const scoreWarten = erwartungswert * zeitDaempfung;
+
+    const weights = druckToWeights(inputs.druck);
+    const finalScore = scoreKaufen * weights.kaufen + scoreWarten * weights.warten;
+    const absoluteDiff = scoreKaufen - scoreWarten;
+
+    let recommendation, confidence, recClass;
+
+    if (absoluteDiff > 1.5) {
+      recommendation = '✅ Effingen jetzt kaufen';
+      confidence = 'Klare Empfehlung';
+      recClass = 'kaufen';
+    } else if (absoluteDiff > 0.5) {
+      recommendation = '↗️ Tendenz: kaufen';
+      confidence = 'Leichte Empfehlung';
+      recClass = 'kaufen';
+    } else if (absoluteDiff > -0.5) {
+      recommendation = '⚖️ Patt — Bauchgefühl entscheidet';
+      confidence = 'Beide Optionen ähnlich attraktiv';
+      recClass = 'patt';
+    } else if (absoluteDiff > -1.5) {
+      recommendation = '↘️ Tendenz: warten';
+      confidence = 'Leichte Empfehlung';
+      recClass = 'warten';
+    } else {
+      recommendation = '⏸️ Lieber warten und weiter suchen';
+      confidence = 'Klare Empfehlung';
+      recClass = 'warten';
+    }
+
+    if (Math.abs(absoluteDiff) < 1.5 && weights.kaufen >= 0.65 && scoreKaufen > 5) {
+      recommendation = '↗️ Tendenz: kaufen (durch Sicherheits-Präferenz)';
+      recClass = 'kaufen';
+      confidence = 'Sicherheits-Präferenz verschiebt Empfehlung';
+    } else if (Math.abs(absoluteDiff) < 1.5 && weights.warten >= 0.65 && scoreWarten > 5) {
+      recommendation = '↘️ Tendenz: warten (durch Optimierungs-Präferenz)';
+      recClass = 'warten';
+      confidence = 'Optimierungs-Präferenz verschiebt Empfehlung';
+    }
+
+    return {
+      scoreKaufen: scoreKaufen.toFixed(2),
+      scoreWarten: scoreWarten.toFixed(2),
+      diff: absoluteDiff.toFixed(2),
+      finalScore: finalScore.toFixed(2),
+      weights: weights,
+      recommendation,
+      confidence,
+      recClass,
+      erwartungswert: erwartungswert.toFixed(2),
+      zeitFaktor: zeitFaktor,
+      zeitDaempfung: zeitDaempfung.toFixed(2),
+      dritterFaktor: dritterFaktor.toFixed(2),
+      investAnteil: investAnteil,
+      scoreMarkt: scoreMarkt.toFixed(2),
+      scoreWorstCase: scoreWorstCase.toFixed(2),
+      risikoAnteil: (risikoAnteil * 100).toFixed(0),
+      marktModifier: marktModifier.toFixed(2)
+    };
+  }
+
+  function calculate() {
+    const family = document.getElementById('familyName').value.trim() || 'Familie';
+    const objektQ = parseInt(document.getElementById('objektQ').value);
+    const standort = getStandortScore();
+    const vierP = parseInt(document.getElementById('vierP').value);
+    const druck = parseInt(document.getElementById('druck').value);
+    const invest = parseInt(document.getElementById('invest').value);
+    const markt = parseInt(document.getElementById('markt').value);
+    const risiko = parseInt(document.getElementById('risiko').value);
+
+    if (!isStandortValid()) {
+      alert('Bitte fülle alle 5 Standort-Sub-Kriterien aus oder wechsle zur einfachen Bewertung (Schritt 2).');
+      return;
+    }
+
+    if (selectedTime === null) {
+      alert('Bitte wähle deine verfügbare Zeit aus (Schritt 6).');
+      return;
+    }
+
+    const result = computeScores({objektQ, standort, vierP, druck, invest, markt, risiko, zeitkapazitaet: selectedTime});
+    displayResult(family, result, {objektQ, standort, vierP, druck, invest, markt, risiko, zeitkapazitaet: selectedTime});
+  }
+
+  function displayResult(family, result, inputs) {
+    document.getElementById('resultFamily').textContent = family;
+    const recEl = document.getElementById('resultText');
+    recEl.textContent = result.recommendation;
+    recEl.className = 'result-recommendation ' + result.recClass;
+    document.getElementById('resultConfidence').textContent =
+      `${result.confidence} · Score-Differenz: ${result.diff} · Gewichtete Empfehlung: ${result.finalScore}/10`;
+
+    document.getElementById('scoreKaufen').textContent = result.scoreKaufen;
+
+    let kaufenDetail = `Objekt (${inputs.objektQ}) + Standort (${typeof inputs.standort === 'number' ? inputs.standort.toFixed(1) : inputs.standort})`;
+    if (inputs.invest === 0) {
+      kaufenDetail += ` + Konstellation (${inputs.vierP}) / 3`;
+    } else {
+      kaufenDetail += ` + Mix-Faktor (${result.dritterFaktor}) / 3`;
+    }
+    document.getElementById('scoreKaufenDetail').textContent = kaufenDetail;
+    document.getElementById('scoreKaufenWeight').textContent =
+      `Gewichtung: ${Math.round(result.weights.kaufen * 100)}%`;
+
+    document.getElementById('scoreWarten').textContent = result.scoreWarten;
+    const zeitModSign = parseFloat(result.zeitDaempfung) >= 1 ? '+' : '';
+    const zeitModPct = ((parseFloat(result.zeitDaempfung) - 1) * 100).toFixed(0);
+    document.getElementById('scoreWartenDetail').textContent =
+      `EW ${result.erwartungswert} × Zeit-Modifier (${zeitModSign}${zeitModPct}%)`;
+    document.getElementById('scoreWartenWeight').textContent =
+      `Gewichtung: ${Math.round(result.weights.warten * 100)}%`;
+
+    let reasoning = '';
+    const standortDisplay = typeof inputs.standort === 'number' ? inputs.standort.toFixed(1) : inputs.standort;
+    reasoning += `<p><strong>Score "Kaufen jetzt"</strong> = ${result.scoreKaufen} ergibt sich aus dem Mittel von Objekt-Qualität (${inputs.objektQ}/10), Standort (${standortDisplay}/10) und einem Mix aus Konstellations-Wert und Investment-Faktor.</p>`;
+
+    if (inputs.invest === 0) {
+      reasoning += `<p><strong>Familienleben vs. Investition:</strong> 100% Familienleben → nur euer Konstellations-Wert (${inputs.vierP}/10) zählt im dritten Faktor.</p>`;
+    } else if (inputs.invest === 100) {
+      reasoning += `<p><strong>Familienleben vs. Investition:</strong> 100% Investition → nur Effingen-Investment-Score (4.5/10) zählt im dritten Faktor.</p>`;
+    } else {
+      reasoning += `<p><strong>Familienleben vs. Investition:</strong> ${100-inputs.invest}% Familienleben + ${inputs.invest}% Investition → Mix-Faktor ${result.dritterFaktor} aus Konstellations-Wert (${inputs.vierP}) und Effingen-Investment-Score (4.5).</p>`;
+    }
+
+    reasoning += `<p><strong>Score "Warten"</strong> = ${result.scoreWarten} setzt sich zusammen aus zwei unabhängigen Einschätzungen:</p>`;
+    reasoning += `<ul style="margin-left: 1.5rem; font-size: 0.88rem;">`;
+    const marktSign = result.marktModifier >= 0 ? '+' : '';
+    reasoning += `<li><strong>Markteinschätzung (${inputs.markt}/10):</strong> Score-Modifier ${marktSign}${result.marktModifier} → Marktscore ${result.scoreMarkt}</li>`;
+    reasoning += `<li><strong>Konstellations-Risiko (${inputs.risiko}/10):</strong> ${result.risikoAnteil}% Worst-Case-Anteil → Worst-Case-Score ${result.scoreWorstCase} (Effingen − Konstellations-Strafe)</li>`;
+    reasoning += `<li><strong>Erwartungswert:</strong> ${result.scoreMarkt} × ${(100 - parseFloat(result.risikoAnteil)).toFixed(0)}% + ${result.scoreWorstCase} × ${result.risikoAnteil}% = ${result.erwartungswert}</li>`;
+    reasoning += `</ul>`;
+    const modSign = parseFloat(result.zeitDaempfung) >= 1 ? '+' : '';
+    const modPct = ((parseFloat(result.zeitDaempfung) - 1) * 100).toFixed(0);
+    reasoning += `<p>Anschliessend gewichtet mit eurer verfügbaren Zeit (${timeToLabel(inputs.zeitkapazitaet)}, Zeit-Modifier ${modSign}${modPct}%).</p>`;
+
+    reasoning += `<p><strong>Optimierung vs. Sicherheit (${inputs.druck}/10):</strong> Verschiebt die Gewichtung der finalen Empfehlung — ${Math.round(result.weights.kaufen * 100)}% Kaufen vs. ${Math.round(result.weights.warten * 100)}% Warten. `;
+    if (inputs.druck >= 7) {
+      reasoning += `Eure Sicherheits-Präferenz gewichtet "jetzt entscheiden" stärker.</p>`;
+    } else if (inputs.druck <= 3) {
+      reasoning += `Eure Optimierungs-Präferenz gewichtet "weiter suchen" stärker.</p>`;
+    } else {
+      reasoning += `Mittlerer Wert — keine starke Verschiebung.</p>`;
+    }
+
+    if (inputs.zeitkapazitaet <= 6) {
+      reasoning += `<p>ℹ️ <strong>Hinweis:</strong> Eure verfügbare Zeit (${timeToLabel(inputs.zeitkapazitaet)}) ist kurz — der Zeitfaktor reduziert die Wartequalität entsprechend.</p>`;
+    }
+    if (inputs.risiko >= 7) {
+      reasoning += `<p>ℹ️ <strong>Hinweis:</strong> Ihr schätzt das Konstellations-Risiko hoch ein — Score Warten wird zu ${result.risikoAnteil}% vom Worst-Case-Szenario dominiert.</p>`;
+    }
+    if (inputs.markt >= 7) {
+      reasoning += `<p>ℹ️ <strong>Hinweis:</strong> Ihr seid optimistisch bezüglich des Marktes — das spricht für Warten und Suchen.</p>`;
+    }
+    if (inputs.markt <= 3) {
+      reasoning += `<p>ℹ️ <strong>Hinweis:</strong> Ihr seid pessimistisch bezüglich des Marktes — das spricht gegen Warten.</p>`;
+    }
+    if (inputs.standort <= 4) {
+      reasoning += `<p>ℹ️ <strong>Hinweis:</strong> Eure Standortbewertung (${standortDisplay}/10) ist tief — bedenkt, dass ihr langfristig dort lebt.</p>`;
+    }
+    if (inputs.invest >= 70) {
+      reasoning += `<p>💼 <strong>Investment-Hinweis:</strong> Mit ${inputs.invest}% Investitions-Fokus ist Effingen kritisch zu sehen — Investment-Score Effingen: 4.5/10.</p>`;
+    }
+
+    document.getElementById('reasoningText').innerHTML = reasoning;
+
+    let sens = '';
+    const timeOptions = [3, 6, 12, 24, 36];
+    const currentIdx = timeOptions.indexOf(inputs.zeitkapazitaet);
+    const longerTime = timeOptions[Math.min(timeOptions.length - 1, currentIdx + 1)];
+    const shorterTime = timeOptions[Math.max(0, currentIdx - 1)];
+
+    const scenariosToTest = [
+      {label: 'Verfügbare Zeit länger (' + timeToLabel(longerTime) + ')', changes: {zeitkapazitaet: longerTime}},
+      {label: 'Verfügbare Zeit kürzer (' + timeToLabel(shorterTime) + ')', changes: {zeitkapazitaet: shorterTime}},
+      {label: 'Sicherheits-Präferenz +2 Punkte', changes: {druck: Math.min(10, inputs.druck + 2)}},
+      {label: 'Optimierungs-Präferenz +2 Punkte', changes: {druck: Math.max(1, inputs.druck - 2)}},
+      {label: 'Markt 2 Punkte optimistischer', changes: {markt: Math.min(10, inputs.markt + 2)}},
+      {label: 'Markt 2 Punkte pessimistischer', changes: {markt: Math.max(1, inputs.markt - 2)}},
+      {label: 'Konstellations-Risiko 2 Punkte höher', changes: {risiko: Math.min(10, inputs.risiko + 2)}},
+      {label: 'Standort 2 Punkte höher', changes: {standort: Math.min(10, inputs.standort + 2)}},
+    ];
+
+    scenariosToTest.forEach(s => {
+      const altInputs = {...inputs, ...s.changes};
+      const altResult = computeScores(altInputs);
+      sens += `<div class="sens-item"><strong>${s.label}:</strong> Empfehlung → ${altResult.recommendation} (Differenz: ${altResult.diff})</div>`;
+    });
+
+    document.getElementById('sensitivityList').innerHTML = sens;
+
+    const resultEl = document.getElementById('resultSection');
+    resultEl.classList.add('show');
+    setTimeout(() => resultEl.scrollIntoView({behavior: 'smooth', block: 'start'}), 100);
+  }
+
+  function resetForm() {
+    document.getElementById('familyName').value = '';
+    ['objektQ', 'standort', 'vierP', 'druck', 'markt', 'risiko'].forEach(id => {
+      document.getElementById(id).value = 5;
+      document.getElementById(id + '-val').textContent = '5';
+    });
+    document.getElementById('invest').value = 0;
+    updateInvest();
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+    selectedTime = null;
+    subValues = { arbeit: 0, schule: 0, einkauf: 0, laerm: 0, natur: 0 };
+    document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('standort-arbeitsort').value = '';
+    document.getElementById('standort-detail-val').textContent = '—';
+    switchStandortMode('simple');
+    document.getElementById('resultSection').classList.remove('show');
+    updateProgress();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  updateProgress();
+  updateInvest();
+</script>
+</body>
+</html>

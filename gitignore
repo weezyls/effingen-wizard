@@ -1,0 +1,14 @@
+# OS-spezifisch
+.DS_Store
+Thumbs.db
+
+# Editor-Dateien
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build-Artefakte (falls jemals nötig)
+node_modules/
+dist/
+build/
